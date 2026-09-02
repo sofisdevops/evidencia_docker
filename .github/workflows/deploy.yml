@@ -71,6 +71,7 @@ jobs:
           key: ${{ secrets.SERVER_SSH_KEY }}
           script: |
             cd ~/evidencia_docker
+            git clean -f
             git pull origin main
             docker compose pull app_backend
             docker compose up -d
