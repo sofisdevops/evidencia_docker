@@ -48,7 +48,7 @@ jobs:
           push: false
           load: true
           no-cache: true
-          tags: zunnix/api_sofia:latest
+          tags: zunnix/evidenciadocker:latest
 
       - name: Escanear contenedor con trivy
         uses: aquasecurity/trivy-action@master
