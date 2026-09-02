@@ -1,0 +1,83 @@
+-services:
+  nginx-proxy-manager:
+    image: 'jc21/nginx-proxy-manager:latest'
+    container_name: proxy-manager
+    restart: always
+    ports:
+      - "80:80" #Http
+      - "81:81" #Administración de la API
+      - "443:443" #Https
+    volumes:
+      - ./npm_data:/data
+      - ./npm_letsencrypt:/etc/letsencrypt    
+    networks:
+      - red-cba-sofia
+
+  servidor-bd-sofia:
+    image: mysql:8.0
+    container_name: contenedor-servidor-bd
+    environment: 
+      MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD}
+      MYSQL_DATABASE: ${MYSQL_DATABASE}
+    volumes:
+      - mysql-data:/var/lib/mysql
+    networks:
+      - red-cba-sofia
+    healthcheck:
+      test: ["CMD", "mysqladmin", "ping", "-h", "127.0.0.1", "-u", "root", "-p${MYSQL_ROOT_PASSWORD}"]
+      interval: 5s
+      timeout: 3s
+      retries: 5
+      start_period: 15s
+
+  app_backend:
+    build: .
+    image: zunnix/api_sofia:latest
+    container_name: backend_sofia
+    environment:
+      FLASK_ENV: development
+      MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD}
+      MYSQL_DATABASE: ${MYSQL_DATABASE}
+    networks:
+      - red-cba-sofia
+    depends_on:
+      servidor-bd-sofia:
+        condition: service_healthy
+    healthcheck:
+      test: ["CMD-SHELL", "curl -f http://localhost:5050/ || exit 1"]
+      interval: 10s
+      timeout: 5s
+      retries: 3
+  uptime-kuma:
+    image: louislam/uptime-kuma:1
+    container_name: uptime-kuma
+    restart: always
+    ports:
+      - "3001:3001"
+    volumes:
+      - uptime-kuma-data:/app/data
+    networks:
+      - red-cba-sofia
+    depends_on:
+      - servidor-bd-sofia
+
+  dozzle:
+    image: amir20/dozzle:latest
+    container_name: dozzle
+    restart: always
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock
+    ports:
+      - "8080:8080"
+    networks:
+      - red-cba-sofia
+
+networks: 
+  red-cba-sofia: 
+    name: red-cba-sofia-ejemplo
+
+volumes:
+  mysql-data:
+    name: mysql-data
+  uptime-kuma-data:
+    name: uptime-kuma-data
