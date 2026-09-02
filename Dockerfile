@@ -4,7 +4,6 @@ RUN apt-get update && apt-get upgrade -y && rm -rf /var/lib/apt/lists/*
 
 WORKDIR /home/evidencia
 
-# Forzar la desinstalación y reinstalación sin caché de los paquetes vulnerables
 RUN pip install --no-cache-dir --upgrade pip
 RUN pip install --no-cache-dir --force-reinstall "wheel>=0.46.2" "setuptools>=78.1.1" "msgpack>=1.2.1"
 
