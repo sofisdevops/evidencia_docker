@@ -53,7 +53,7 @@ jobs:
       - name: Escanear contenedor con trivy
         uses: aquasecurity/trivy-action@master
         with: 
-          image-ref: 'zunnix/api_sofia:latest'
+          image-ref: 'zunnix/evidenciadocker:latest'
           format: 'table'
           exit-code: '1' # Si encuentra alguna falla, rompe la ejecucion
           ignore-unfixed: true
@@ -61,7 +61,7 @@ jobs:
           severity: 'CRITICAL,HIGH' # Son los que van a detener la ejecución
 
       - name: Subir la imagen a Docker Hub
-        run: docker push zunnix/api_sofia:latest
+        run: docker push zunnix/evidenciadocker:latest
 
       - name: Desplegar en servidor cloud
         uses: appleboy/ssh-action@v1.0.3
