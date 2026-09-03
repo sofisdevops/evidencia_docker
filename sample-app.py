@@ -4,8 +4,6 @@ import os
 
 app = Flask(__name__)
 
-MYSQL_PASSWORD = "super_secret_123"
-
 DB_CONFIG = {
     'host': os.getenv('DB_HOST', 'contenedor-servidor-bd'),
     'user': os.getenv('DB_USER', 'root'),
@@ -85,4 +83,4 @@ def version():
 
 if __name__ == "__main__":
     modo_debug = os.getenv("FLASK_DEBUG", "True").lower() == "true"
-    app.run(host='0.0.0.0', port=5050, debug=True) # nosec B104
+    app.run(host='0.0.0.0', port=5050, debug=modo_debug) # nosec B104
