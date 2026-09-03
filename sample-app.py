@@ -5,7 +5,7 @@ import os
 app = Flask(__name__)
 
 DB_CONFIG = {
-    'host': os.getenv('DB_HOST', 'contenedor-servidor-bd'),
+    'host': os.getenv('DB_HOST', 'contenedor-servidor-bd-proyecto'),
     'user': os.getenv('DB_USER', 'root'),
     'password': os.getenv('MYSQL_ROOT_PASSWORD'),
     'database': os.getenv('MYSQL_DATABASE', 'bd-de-sofia'),
