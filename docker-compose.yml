@@ -4,9 +4,9 @@ services:
     container_name: proxy-manager
     restart: always
     ports:
-      - "80:80" #Http
-      - "81:81" #Administración de la API
-      - "443:443" #Https
+      - "80:80" # Http
+      - "81:81" # Administración de la API
+      - "443:443" # Https
     volumes:
       - ./npm_data:/data
       - ./npm_letsencrypt:/etc/letsencrypt    
@@ -15,27 +15,30 @@ services:
 
   servidor-bd-sofia:
     image: mysql:8.0
-    container_name: contenedor-servidor-bd
+    container_name: contenedor-servidor-bd-proyecto
     environment: 
       MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD}
       MYSQL_DATABASE: ${MYSQL_DATABASE}
     volumes:
-      - mysql-data:/var/lib/mysql
+      - mysql-data-sofia:/var/lib/mysql
     networks:
       - red-cba-sofia
     healthcheck:
-      test: ["CMD", "mysqladmin", "ping", "-h", "127.0.0.1", "-u", "root", "-p${MYSQL_ROOT_PASSWORD}"]
+      test: ["CMD-SHELL", "mysqladmin ping -h 127.0.0.1 -u root -p'${MYSQL_ROOT_PASSWORD}'"]
       interval: 5s
       timeout: 3s
       retries: 5
-      start_period: 15s
+      start_period: 20s
 
   app_backend:
     build: .
     image: zunnix/api_sofia:latest
     container_name: backend_sofia
+    ports:
+      - "5050:5050"
     environment:
       FLASK_ENV: development
+      MYSQL_HOST: servidor-bd-sofia
       MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD}
       MYSQL_DATABASE: ${MYSQL_DATABASE}
     networks:
@@ -48,6 +51,7 @@ services:
       interval: 10s
       timeout: 5s
       retries: 3
+
   uptime-kuma:
     image: louislam/uptime-kuma:1
     container_name: uptime-kuma
@@ -77,7 +81,7 @@ networks:
     name: red-cba-sofia-ejemplo
 
 volumes:
-  mysql-data:
-    name: mysql-data
+  mysql-data-sofia:
+    name: mysql-data-sofia
   uptime-kuma-data:
     name: uptime-kuma-data
