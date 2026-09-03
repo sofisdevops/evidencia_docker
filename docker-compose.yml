@@ -32,7 +32,7 @@ services:
 
   app_backend:
     build: .
-    image: zunnix/api_sofia:latest
+    image: zunnix/evidenciadocker:latest
     container_name: backend_sofia
     ports:
       - "5050:5050"
