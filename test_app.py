@@ -15,4 +15,4 @@ def client():
 def test_home_status_code(client):
   """Prueba unitaria para verificar que la ruta principal responde 200 OK"""
   response = client.get("/")
-  assert response.status_code == 502
+  assert response.status_code == 200
