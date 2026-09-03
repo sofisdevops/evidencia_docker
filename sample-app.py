@@ -4,6 +4,8 @@ import os
 
 app = Flask(__name__)
 
+MYSQL_ROOT_PASSWORD=sena123
+
 DB_CONFIG = {
     'host': os.getenv('DB_HOST', 'contenedor-servidor-bd'),
     'user': os.getenv('DB_USER', 'root'),
